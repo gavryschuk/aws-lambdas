@@ -12,9 +12,11 @@
     "@types/aws-lambda": "^8.10.40",
     "@types/aws-sdk": "^2.7.0",
     "@types/node": "^13.7.0",
+    "@types/uuid": "^3.4.7",
     "aws-sdk": "^2.614.0",
     "serverless-offline": "^5.12.1",
     "serverless-plugin-typescript": "^1.1.9",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "uuid": "^3.4.0"
   }
 }
