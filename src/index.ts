@@ -2,7 +2,7 @@ import { Handler, Context, Callback } from 'aws-lambda';
 import {GameLift, AWSError} from 'aws-sdk';
 
 const GameLiftClient = new GameLift();
-const FleetId = "fleet-0e5bff56-1fdb-48f2-90f8-2612342d7c3f";
+const FleetId = "fleet-9f0a12b1-dfb0-4493-9d6f-6acf40cd00a6";
 
 /**
  * Search for available Game Sessions
@@ -61,8 +61,8 @@ const handler: Handler = (event: any, context: Context, callback: Callback) => {
       // create a new game session
       createGameSession( event.maxPlayers).then((json:any)=>{
 
-        const {GameSessionId} = json;
-
+        const {GameSession} = json;
+        const {GameSessionId} = GameSession;
         // create a player session
         createPlayerSessionWithCallback(GameSessionId, event.playerID, callback)
           
