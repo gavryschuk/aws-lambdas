@@ -13,6 +13,7 @@ const putDataIntoDynamoDB = async(eventLog:any) => {
     TableName: DBTable,
     Item: eventLog
   }).promise()
+}
 
 /**
  * Lambda Function Handler
