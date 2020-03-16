@@ -35,7 +35,7 @@ const handler: Handler = (event: any, context: Context, callback: Callback) => {
       callback(err);
     })
 
-  }catch(e){ callback(new Error("eventLog parameter has to be a stringified JSON object")); return; }
+  }catch(e){ callback(new Error("eventLog parameter has to be a stringified JSON object: "+e.toString())); return; }
 
 };
 
