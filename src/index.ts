@@ -1,80 +1,40 @@
 import { Handler, Context, Callback } from 'aws-lambda';
-import {GameLift, AWSError} from 'aws-sdk';
+import { DynamoDB, AWSError } from 'aws-sdk';
 
-const GameLiftClient = new GameLift();
-const FleetId = "fleet-9f0a12b1-dfb0-4493-9d6f-6acf40cd00a6";
+const DynamoDBClient = new DynamoDB.DocumentClient();
+const DBTable = "prod-eventLogs";
 
 /**
- * Search for available Game Sessions
+ * puts the data into Dynamo DB
+ * @param eventLog  - stringified JSON data object
  */
-const searchAvailableGameSessions = async() => {
-  return await GameLiftClient.searchGameSessions({
-    FleetId,
-    FilterExpression:"hasAvailablePlayerSessions=true"
+const putDataIntoDynamoDB = async(eventLog:any) => {
+  return await DynamoDBClient.put({
+    TableName: DBTable,
+    Item: eventLog
   }).promise()
-}
-
-/**
- * creates new game session
- * @param maxPlayers - maximum amount of Players for new game session
- */
-const createGameSession = async( maxPlayers:number ) => {
-  return await GameLiftClient.createGameSession({
-    MaximumPlayerSessionCount:maxPlayers,
-    FleetId
-  }).promise()
-}
-
-/**
- * creates new player session and returns it to the client
- * @param callback - callback
- * @param gameSessionId - gamesession id.
- * @param playerId - player id. If not defined -> will be randomly generated
- */
-const createPlayerSessionWithCallback = async( gameSessionId:string, playerId:string, callback: Callback ) => {
-  await GameLiftClient.createPlayerSession({
-    GameSessionId: gameSessionId,
-    PlayerId: playerId
-  }).promise().then((data:any)=>{
-    callback(undefined, data.PlayerSession);
-  }).catch( (err:AWSError) => { callback(err); })
-}
 
 /**
  * Lambda Function Handler
- * @param event - input data. Required Params: maxPlayers:number & playerID:string
+ * @param event - input data. Required Params: eventLog:string
  * @param context - context
  * @param callback - function callback
  */
 const handler: Handler = (event: any, context: Context, callback: Callback) => {
   
   // check if income params are provided
-  if(!event.maxPlayers) { callback(new Error("Please provide a value for maxPlayers parameter")); return; }
-  if(!event.playerID) { callback(new Error("Please provide a value for playerID parameter")); return; }
+  if(!event.eventLog) { callback(new Error("Please provide a value for eventLog parameter")); return; }
+  try{ 
+    // parse income eventLog into JSON
+    const eventLog = JSON.parse(event.eventLog); 
 
-  // find any game sessions that have available players
-  searchAvailableGameSessions().then((data:any) =>{
+    putDataIntoDynamoDB(eventLog).then((data:DynamoDB.DocumentClient.PutItemOutput) => { 
+      callback(undefined,data); 
+    }).catch((err:AWSError) => {
+      callback(err);
+    })
 
-    // if no available game sessions
-    if(!data.GameSessions.length)
-      
-      // create a new game session
-      createGameSession( event.maxPlayers).then((json:any)=>{
-
-        const {GameSession} = json;
-        const {GameSessionId} = GameSession;
-        // create a player session
-        createPlayerSessionWithCallback(GameSessionId, event.playerID, callback)
-          
-      }).catch( (err:AWSError) => { callback(err); })
-
-    // create a player session
-    else {
-      const {GameSessionId} = data.GameSessions[0];
-      createPlayerSessionWithCallback(GameSessionId, event.playerID, callback)
-    }
-
-  }).catch( (err:AWSError) => { callback(err); })
+  }catch(e){ callback(new Error("eventLog parameter has to be a stringified JSON object")); return; }
 
 };
 

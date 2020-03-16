@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: gamelift
+service: dynamoDB-Analytics
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -27,10 +27,7 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-        - "gamelift:CreateGameSession"
-        - "gamelift:CreatePlayerSession"
-        - "gamelift:SearchGameSessions"
-        - "gamelift:DescribeGameSessions"
+        - "dynamodb:*"
       Resource: "*"
 #    - Effect: "Allow"
 #      Action:
