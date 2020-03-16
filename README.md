@@ -1,4 +1,4 @@
-# BRANCH gamelift-get-active-player-session
+<!-- # BRANCH gamelift-get-active-player-session
 
 This script generates and deploys lambda function to work with GameLift server fleet.
 
@@ -11,7 +11,7 @@ Requirements for Lambda to work successfully:
 - when calling this function from UE4 client don't forget to provide **maxPlayers**:number and **playerID**:string as input params.
 
 
-How to build and deploy the function please read further.....
+How to build and deploy the function please read further..... -->
 
 
 # AWS Lambda in TypeScript
