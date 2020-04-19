@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: gamelift
+service: dynamoDB
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -34,6 +34,7 @@ provider:
         - "gamelift:StartMatchmaking"
         - "gamelift:DescribeMatchmaking"
         - "gamelift:StopMatchmaking"
+        - "dynamodb:*"
       Resource: "*"
 #    - Effect: "Allow"
 #      Action:
@@ -60,6 +61,8 @@ functions:
     handler: ./src/matchmaking/index.handler
   latency:
     handler: ./src/latency/index.handler
+  analytics:
+    handler: ./src/analytics/index.handler
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
