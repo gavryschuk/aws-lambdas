@@ -57,6 +57,8 @@ package:
     src/**/!(*.spec).js
 
 functions:
+  playerSession:
+    handler: ./src/playerSession/index.handler
   matchmaking:
     handler: ./src/matchmaking/index.handler
   latency:
