@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "serverless deploy",
+    "deployWithMultiRegionalLatency":"serverless deploy && serverless deploy --region us-east-2 && serverless deploy --region us-west-1",
+    "removeWithMultiRegionalLatency":"serverless remove && serverless remove --region us-east-2 && serverless remove --region us-west-1"
   },
   "author": "a.v.gavryschuk@gmail.com",
   "license": "ISC",

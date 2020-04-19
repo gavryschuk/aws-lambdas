@@ -23,7 +23,7 @@ service: gamelift
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: dev
+  stage: prod
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -31,6 +31,9 @@ provider:
         - "gamelift:CreatePlayerSession"
         - "gamelift:SearchGameSessions"
         - "gamelift:DescribeGameSessions"
+        - "gamelift:StartMatchmaking"
+        - "gamelift:DescribeMatchmaking"
+        - "gamelift:StopMatchmaking"
       Resource: "*"
 #    - Effect: "Allow"
 #      Action:
@@ -48,13 +51,15 @@ provider:
 
 package:
   exclude:
-    - node_modules/**/*
-  # include:
-    # - src/**/*
+    - '!node_modules/**/*'
+  include:
+    src/**/!(*.spec).js
 
 functions:
-  playerSession:
-    handler: ./src/index.handler
+  matchmaking:
+    handler: ./src/matchmaking/index.handler
+  latency:
+    handler: ./src/latency/index.handler
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
